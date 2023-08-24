@@ -17,10 +17,12 @@
 	},
 	"plugins": ["@typescript-eslint", "prettier"],
 	"rules": {
-		"prettier/prettier": "error",
+		"prettier/prettier": "off",
 		"no-case-declarations": "off",
 		"no-constant-condition": "off",
-		"@typescript-eslint/ban-ts-comment": "off"
+		"@typescript-eslint/no-unused-vars": "off",
+		"@typescript-eslint/ban-ts-comment": "off",
+		"@typescript-eslint/no-explicit-any": "off"
 	},
 	"ignorePatterns": ["**/__tests__/*.js"]
 }
