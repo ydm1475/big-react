@@ -1,7 +1,6 @@
 {
 	"compileOnSave": true,
 	"compilerOptions": {
-		"jsx": "react",
 		"target": "ESNext",
 		"useDefineForClassFields": true,
 		"module": "ESNext",
