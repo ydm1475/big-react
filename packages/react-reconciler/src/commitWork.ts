@@ -55,23 +55,36 @@ const commitMutationEffectsOnFiber = (finshedWork: FiberNode) => {
 
     }
 }
+
+function recordHostChildrenToDelete(childrenToDelete: FiberNode[], unmountFiber: FiberNode) {
+    // 1、找到第一个root host节点
+    // 2、每找到一个，判断下这个节点是不是1找到的那个兄弟节点
+    const lastOne = childrenToDelete[childrenToDelete.length - 1];
+    if (!lastOne) {
+        childrenToDelete.push(unmountFiber);
+    } else {
+        let node = lastOne.sibling;
+        while (node != null) {
+            if (unmountFiber === node) {
+                childrenToDelete.push(unmountFiber);
+            }
+            node = node.sibling;
+        }
+    }
+}
 function commitDeletion(childToDelete: FiberNode) {
-    let rootHostNode: FiberNode | null = null;
+    const rooChildrenToDelete: FiberNode[] = [];
     commitNestedComponent(childToDelete, unmountFiber => {
         switch (unmountFiber.tag) {
             case HostComponent:
                 // 解绑ref
-
-                if (rootHostNode === null) {
-                    rootHostNode = unmountFiber;
-                }
+                recordHostChildrenToDelete(rooChildrenToDelete, unmountFiber);
                 break;
             case HostText:
-                if (rootHostNode === null) {
-                    rootHostNode = unmountFiber;
-                }
+                recordHostChildrenToDelete(rooChildrenToDelete, unmountFiber);
                 break;
             case FunctionComponent:
+
                 // TODO useEffect unmount流程的处理
                 return;
             default:
@@ -82,12 +95,11 @@ function commitDeletion(childToDelete: FiberNode) {
         }
     })
     // 递归子树
-
-    if (rootHostNode != null) {
+    if (rooChildrenToDelete.length != 0) {
         const hostParent = getHostParent(childToDelete);
-        if (hostParent != null) {
-            removeChild((rootHostNode as FiberNode).stateNode as any, hostParent);
-        }
+        rooChildrenToDelete.forEach(node => {
+            removeChild(node.stateNode, hostParent);
+        })
     }
 
     childToDelete.return = null;
@@ -130,6 +142,7 @@ function commitPlacement(finshedWork: FiberNode) {
     }
     const hostParent = getHostParent(finshedWork);
     const sibling = getHostSibling(finshedWork);
+
     insertOrAppendPlacementNodeIntoContainer(finshedWork, hostParent, sibling);
 }
 

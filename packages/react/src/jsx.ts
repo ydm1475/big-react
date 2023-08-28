@@ -51,6 +51,7 @@ export const jsx = (type: ElementType, config: Props, ...children: any) => {
 
 }
 
+export const Fragment = REACT_FRAGMENT_TYPE;
 
 export const jsxDEV = (type: ElementType, config: Props, propsKey: any) => {
     let key: Key = propsKey;

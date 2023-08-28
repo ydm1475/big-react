@@ -40,7 +40,6 @@ export const commitUpdate = (fiber: FiberNode) => {
 
 
 export function commitTextUpdate(textInstance: TextInstance, content: string) {
-    console.log('222');
     textInstance.textContent = content;
     return textInstance;
 }

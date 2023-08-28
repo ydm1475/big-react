@@ -19,6 +19,16 @@ const App = () => {
     <li key='2'>2</li>,
     <li key='1'>1</li>,
   ];
+
+  return (
+    <ul onClick={handleClick}>
+      <>
+        <li key='4'>4</li>
+        <li key='5'>5</li>
+      </>
+      {arr}
+    </ul>
+  )
   return (
     <ul onClick={handleClick} key='123'>
       {arr}

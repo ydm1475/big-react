@@ -1,7 +1,7 @@
 import { ReactElement } from "shared/ReactTypes";
 import { FiberNode } from "./fiber";
 import { UpdateQueue, processUpdateQueue } from "./updateQueue";
-import { FunctionComponent, HostComponent, HostRoot, HostText } from "./workTags";
+import { Fragment, FunctionComponent, HostComponent, HostRoot, HostText } from "./workTags";
 import { mountChildReconciler, reconcileChildFibers } from "./childFibers";
 import { renderWithHooks } from "./fiberHooks";
 
@@ -16,6 +16,8 @@ export const beginWork = (wip: FiberNode) => {
             return null;
         case FunctionComponent:
             return updateFunctionComponent(wip);
+        case Fragment:
+            return updateFragment(wip);
         default:
             if (__DEV__) {
                 console.warn('beginWork未定义的类型')
@@ -25,6 +27,11 @@ export const beginWork = (wip: FiberNode) => {
     return null;
 }
 
+function updateFragment(wip: FiberNode) {
+    const nextChildren = wip.pendingProps;
+    reconcileChildren(wip, nextChildren);
+    return wip.child;
+}
 
 function updateHostRoot(wip: FiberNode) {
     const baseState = wip.memoizedState;
