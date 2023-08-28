@@ -35,6 +35,8 @@ function markUpdateFromFiberToRoot(fiber: FiberNode): FiberRootNode | null {
 }
 
 function renderRoot(root: FiberRootNode) {
+    console.log('root1', root);
+
     prepareFreshStack(root);
     do {
         try {
@@ -52,6 +54,7 @@ function renderRoot(root: FiberRootNode) {
     // 生成的整个fiberNode
     const finshedWork = root.current.alternate;
     root.finshedWork = finshedWork;
+    console.log('root', root);
     // wip fiberNode书中的flags
     commitRoot(root);
 }

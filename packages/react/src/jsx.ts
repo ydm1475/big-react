@@ -1,4 +1,4 @@
-import { REACT_ELEMENT_TYPE } from ".././../shared/ReactSymbols";
+import { REACT_ELEMENT_TYPE, REACT_FRAGMENT_TYPE } from ".././../shared/ReactSymbols";
 import { ElementType, Key, Props, ReactElement, Ref, Type } from "../../shared/ReactTypes";
 
 const ReactElement = function (type: Type, key: Key, ref: Ref, props: Props): ReactElement {
@@ -43,10 +43,9 @@ export const jsx = (type: ElementType, config: Props, ...children: any) => {
     const childrenLenth = children.length;
     if (childrenLenth === 1) {
         props.children = children[0];
-    } else {
+    } else if (childrenLenth > 0) {
         props.children = children;
     }
-    console.log('type2', key, ref, props);
 
     return ReactElement(type, key, ref, props);
 
@@ -54,7 +53,6 @@ export const jsx = (type: ElementType, config: Props, ...children: any) => {
 
 
 export const jsxDEV = (type: ElementType, config: Props) => {
-    console.log('1231');
     let key: Key = null;
     const props: Props = {};
     let ref: Ref = null;
@@ -84,3 +82,8 @@ export const jsxDEV = (type: ElementType, config: Props) => {
     return ReactElement(type, key, ref, props);
 
 };
+
+
+export function isValidElement(object: any) {
+    return typeof object === 'object' && object != null && object.$$typeof === REACT_ELEMENT_TYPE;
+}

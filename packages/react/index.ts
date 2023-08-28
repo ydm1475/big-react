@@ -1,5 +1,5 @@
 import { Dispatcher, resolveDispatcher } from "./src/currentDispatcher";
-import { jsx } from "./src/jsx";
+import { jsx, jsxDEV, isValidElement as validElement } from "./src/jsx";
 import currentDispatcher from './src/currentDispatcher'
 
 
@@ -13,7 +13,12 @@ export const useState: Dispatcher['useState'] = (initialState: any) => {
 export const __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = {
     currentDispatcher
 }
+
+export const version = '0.0.0';
+export const createElement = jsx;
+export const isValidElement = validElement;
+
 export default {
     version: '0.0.0',
-    createELement: jsx,
+    createElement: jsx,
 }

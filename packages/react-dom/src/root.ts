@@ -7,7 +7,7 @@ export function createRoot(container: Container) {
 
     return {
         render(element: ReactElement) {
-            updateContainer(element, root);
+            return updateContainer(element, root);
         }
     }
 }

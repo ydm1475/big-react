@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom/client'
 
 const App = () => {
 
-  const [num] = useState(() => 120);
-  console.log(num);
+  const [num, setNum] = useState(() => 120);
+  window.setNum = setNum;
   return (
     <div>
-      {num}
+      {num === 3 ? <Child /> : num}
     </div>
   );
 }
