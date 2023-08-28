@@ -2,6 +2,7 @@ import { Instance, appendInitialChild, createInstance, createTextInstance } from
 import { FunctionComponent, HostComponent, HostRoot, HostText } from "./workTags";
 import { FiberNode } from "./fiber";
 import { NoFlags, Update } from "./fiberFlag";
+import { updateFiberProps } from "react-dom/src/SyntheticEvent";
 
 
 function markUpdate(fiber: FiberNode) {
@@ -14,6 +15,8 @@ export const completeWork = (wip: FiberNode) => {
     switch (wip.tag) {
         case HostComponent:
             if (current != null && wip.stateNode) {
+                // var oldProps = current.pendingProps;
+                updateFiberProps(wip.stateNode, newProps);
                 // update阶段
             } else {
                 // 构建DOM
