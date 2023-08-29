@@ -107,6 +107,7 @@ export const createWorkInProgress = (current: FiberNode, pendingProps: Props): F
     wip.type = current.type;
     wip.updateQueue = current.updateQueue;
     wip.child = current.child;
+    wip.ref = current.ref;
     wip.memoizedProps = current.memoizedProps;
     wip.memoizedState = current.memoizedState;
     wip.hook = current.hook;
@@ -116,7 +117,7 @@ export const createWorkInProgress = (current: FiberNode, pendingProps: Props): F
 }
 
 export function createFiberFromElement(element: ReactElement): FiberNode {
-    const { type, key, props } = element;
+    const { type, key, props, ref } = element;
     let fiberTag: WorkTag = FunctionComponent;
     if (typeof type == 'string') {
         fiberTag = HostComponent;
@@ -126,6 +127,7 @@ export function createFiberFromElement(element: ReactElement): FiberNode {
 
     const fiber = new FiberNode(fiberTag, props, key);
     fiber.type = type;
+    fiber.ref = ref;
     return fiber;
 }
 

@@ -1,6 +1,6 @@
 import { scheduleMicroTask } from "hostConfig";
 import { beginWork } from "./beginWork";
-import { commitHookEffectListCreate, commitHookEffectListDestory, commitHookEffectListUnmount, commitMutationEffects } from "./commitWork";
+import { commitHookEffectListCreate, commitHookEffectListDestory, commitHookEffectListUnmount, commitLayoutEffects, commitMutationEffects } from "./commitWork";
 import { completeWork } from "./completeWork";
 import { FiberNode, FiberRootNode, PendingPassiveEffects, createWorkInProgress } from "./fiber";
 import { MutationMask, NoFlags, PassiveMask } from "./fiberFlag";
@@ -138,6 +138,8 @@ function commitRoot(root: FiberRootNode) {
         // mutation Placement
         commitMutationEffects(finshedWork, root);
         root.current = finshedWork;
+        commitLayoutEffects(finshedWork, root)
+
 
         // layout
     } else {

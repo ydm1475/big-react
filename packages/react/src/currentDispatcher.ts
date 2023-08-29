@@ -1,8 +1,10 @@
 import { Action } from "shared/ReactTypes";
 
+
 export interface Dispatcher {
     useState: <T>(initialState: (() => T) | T) => [T, Dispatch<T>];
     useEffect: (create: () => void, deps: any[] | null) => void;
+    useRef: <T>(initialValue: T) => { current: T };
 }
 export type Dispatch<State> = (action: Action<State>) => void;
 

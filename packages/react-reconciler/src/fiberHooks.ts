@@ -6,7 +6,7 @@ import { Action } from "shared/ReactTypes";
 import { scheduleUpdateOnFiber } from "./workLoop";
 import { Dispatch } from "react/src/currentDispatcher";
 import { Lane, NoLane, requestUpdateLane } from "./fiberLanes";
-import { Flags, PassiveEffect } from "./fiberFlag";
+import { Flags, PassiveEffect, Ref } from "./fiberFlag";
 import { HookHasEffect, Passive } from "./hookEffectTags";
 
 let currentlyRenderingFiber: FiberNode | null = null;
@@ -62,12 +62,27 @@ export function renderWithHooks(wip: FiberNode, lane: Lane) {
 
 const HookDispatcherOnMount: Dispatcher = {
     useState: mountState,
-    useEffect: mountEffect
+    useEffect: mountEffect,
+    useRef: mountRef
+}
+function mountRef<T>(initialValue: T): { current: T } {
+    const hook = mountWorkInProgressHook();
+    const ref = { current: initialValue }
+    hook.memoizedState = ref;
+
+    return ref;
+
 }
 
+function updateRef<T>(initialValue: T): { current: T } {
+    const hook = updateWorkInProgressHook();
+    return hook.memoizedState;
+
+}
 const HookDispatcherOnUpdate: Dispatcher = {
     useState: updateState,
-    useEffect: updateEffect
+    useEffect: updateEffect,
+    useRef: updateRef
 }
 
 function updateEffect(create: EffectCallback | void, deps: EffectDeps) {

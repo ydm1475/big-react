@@ -13,6 +13,12 @@ export const useEffect: Dispatcher['useEffect'] = (create, deps) => {
     return dispatcher.useEffect(create, deps)
 
 }
+
+export const useRef: Dispatcher['useRef'] = (initialValue: any) => {
+    const dispatcher = resolveDispatcher();
+    return dispatcher.useRef(initialValue);
+
+}
 // 内部数据共享层
 export const __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = {
     currentDispatcher

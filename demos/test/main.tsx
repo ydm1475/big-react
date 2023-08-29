@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import ReactDOM from 'react-noop-renderer';
+import React, { useEffect, useRef, useState } from 'react'
+import ReactDOM from 'react-dom/client';
 
 // const App = () => {
 
@@ -47,44 +47,23 @@ import ReactDOM from 'react-noop-renderer';
 
 
 function App() {
-  const [num, updateNum] = useState(0);
+  const [isDel, del] = useState(0);
+  const divRef = useRef(null);
+  console.log('ref', divRef.current);
   useEffect(() => {
-    console.log("app, mount");
-    updateNum(10);
-  }, []);
-  useEffect(() => {
-    console.log("hello App3333");
-
-    return () => {
-      console.log("bye bye App");
-    };
-  }, [num]);
-
-  console.log("num", num);
+    console.log('current', divRef.current);
+  });
   return (
-    <ul
-      onClick={(e) => {
-        updateNum((num) => num + 1);
-      }}
-    >
-      你好{num}
-      {num === 1 ? <div>123</div> : <Child />}
-    </ul>
+    <div ref={divRef} onClick={() => del(true)}>
+      {isDel ? '123' : <Child />}
+    </div>
   );
 }
 
 function Child() {
-  useEffect(() => {
-    console.log('hello child');
-
-    return () => {
-      console.log('bye bye child');
-    };
-  });
-  return <p>i am child.</p>;
+  return <p ref={(dom) => console.log('dom is', dom)}>i am child.</p>;
 }
-const root = ReactDOM.createRoot();
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <App />
 )
-window.root = root;

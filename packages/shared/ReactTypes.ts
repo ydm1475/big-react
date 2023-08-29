@@ -1,6 +1,9 @@
-export type Props = any;
+export type Props = {
+    [key: string]: any;
+    children?: any;
+};
 export type Key = any;
-export type Ref = any;
+export type Ref = { current: any } | ((instance: any) => void) | null;
 export type Type = any;
 export type ElementType = any;
 

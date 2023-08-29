@@ -1,12 +1,16 @@
 import { Instance, appendInitialChild, createInstance, createTextInstance, Container } from "hostConfig";
 import { FunctionComponent, HostComponent, HostRoot, HostText, Fragment } from "./workTags";
 import { FiberNode } from "./fiber";
-import { NoFlags, Update } from "./fiberFlag";
+import { NoFlags, Ref, Update } from "./fiberFlag";
 
 
 
 function markUpdate(fiber: FiberNode) {
     fiber.flags |= Update;
+}
+
+function markRef(fiber: FiberNode) {
+    fiber.flags |= Ref;
 }
 
 export const completeWork = (wip: FiberNode) => {
@@ -17,6 +21,9 @@ export const completeWork = (wip: FiberNode) => {
             if (current != null && wip.stateNode) {
                 // var oldProps = current.pendingProps;
                 markUpdate(wip);
+                if (current.ref != wip.ref) {
+                    markRef(wip);
+                }
                 // update阶段
             } else {
                 // 构建DOM
@@ -24,13 +31,19 @@ export const completeWork = (wip: FiberNode) => {
                 // 将DOM插入DOM树中
                 appendAllChildren(instance as any, wip);
                 wip.stateNode = instance;
+
+                // 标记ref
+
+                if (wip.ref != null) {
+                    markRef(wip);
+                }
             }
             bubbleProperties(wip);
             break;
         case HostText:
             if (current != null && wip.stateNode) {
                 // update阶段
-                const oldText = current.memoizedProps.content;
+                const oldText = current.memoizedProps?.content;
                 const newText = newProps.content;
 
                 if (oldText != newText) {
