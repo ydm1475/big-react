@@ -5,22 +5,23 @@ import { UpdateQueue, createUpdate, createUpdateQueue, enqueueUpdate, processUpd
 import { Action } from "shared/ReactTypes";
 import { scheduleUpdateOnFiber } from "./workLoop";
 import { Dispatch } from "react/src/currentDispatcher";
+import { Lane, NoLane, requestUpdateLane } from "./fiberLanes";
 
 let currentlyRenderingFiber: FiberNode | null = null;
 let workInProgressHook: Hook | null = null;
 let currentHook: Hook | null = null;
 const { currentDispatcher } = internals;
-
+let renderLane: Lane = NoLane;
 interface Hook {
     memoizedState: any;
     updateQueue: UpdateQueue<any> | null;
     next: Hook | null;
 }
 
-export function renderWithHooks(wip: FiberNode) {
+export function renderWithHooks(wip: FiberNode, lane: Lane) {
     currentlyRenderingFiber = wip;
     wip.memoizedState = null;
-
+    renderLane = lane;
     const current = wip.alternate;
     if (current == null) {
         // mount阶段
@@ -36,6 +37,7 @@ export function renderWithHooks(wip: FiberNode) {
     currentlyRenderingFiber = null;
     workInProgressHook = null;
     currentHook = null;
+    renderLane = NoLane;
     return children;
 }
 
@@ -50,10 +52,11 @@ const HookDispatcherOnUpdate: Dispatcher = {
 
 function dispatchSetState<State>(fiber: FiberNode | null, updateQueue: UpdateQueue<State>, action: Action<State>) {
 
-    const update = createUpdate(action);
+    const lane = requestUpdateLane();
+    const update = createUpdate(action, lane);
     enqueueUpdate(updateQueue, update);
 
-    scheduleUpdateOnFiber(fiber!);
+    scheduleUpdateOnFiber(fiber!, lane);
 }
 
 function mountState<State>(initialState: (() => State) | State): [State, Dispatch<State>] {
@@ -102,12 +105,13 @@ function mountWorkInProgressHook(): Hook {
 
 
 function updateState<State>(): [State, Dispatch<State>] {
+
     const hook = updateWorkInProgressHook();
     const queue = hook.updateQueue as UpdateQueue<State>;
     const pending = queue.shared.pending;
 
     if (pending !== null) {
-        const { memoizedState } = processUpdateQueue(hook.memoizedState, pending);
+        const { memoizedState } = processUpdateQueue(hook.memoizedState, pending, renderLane);
         hook.memoizedState = memoizedState;
     }
 

@@ -6,27 +6,30 @@ const App = () => {
   const [num, setNum] = useState(120);
 
   const handleClick = () => {
-    setNum(num + 1);
+    setTimeout(() => {
+      setNum((num) => num + 1);
+      setNum((num) => num + 2);
+      setNum((num) => num + 3);
+    }, 10)
+  }
+
+  const handleClick2 = () => {
+
+    setTimeout(() => {
+      setNum((num) => num + 4);
+      setNum((num) => num + 5);
+    }, 10)
   }
 
 
-  const arr = num % 2 === 0 ? [
-    <li key='1'>1</li>,
-    <li key='2'>2</li>,
-    <li key='3'>3</li>,
-  ] : [
-    <li key='3'>3</li>,
-    <li key='2'>2</li>,
-    <li key='1'>1</li>,
-  ];
 
+  console.log('num', num);
   return (
     <ul onClick={handleClick}>
       <>
-        <li key='4'>4</li>
-        <li key='5'>5</li>
+        1212
       </>
-      {arr}
+      <li onClick={handleClick2}>测试批量123{num}</li>
     </ul>
   )
   return (

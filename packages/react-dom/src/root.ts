@@ -8,7 +8,7 @@ export function createRoot(container: Container) {
 
     return {
         render(element: ReactElement) {
-            initEvent(container, 'click')
+            initEvent(container, 'click');
             return updateContainer(element, root);
         }
     }

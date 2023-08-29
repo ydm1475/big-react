@@ -37,7 +37,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
     }
     function reconcileSingleElement(returnFiber: FiberNode, currentFiber: FiberNode | null, element: ReactElement) {
         // 根据reactElement创建一个filber并返回
-        const key = element.key || null;
+        const key = element.key;
         work: while (currentFiber != null) {
             // 更新
             if (currentFiber.key === key) {

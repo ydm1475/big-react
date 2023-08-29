@@ -3,6 +3,7 @@ import { Fragment, FunctionComponent, HostComponent, WorkTag } from './workTags'
 import { Flags, NoFlags } from './fiberFlag';
 import { Container } from 'hostConfig';
 import { REACT_FRAGMENT_TYPE } from 'shared/ReactSymbols';
+import { Lane, Lanes, NoLane, NoLanes } from './fiberLanes';
 
 export class FiberNode {
     tag: WorkTag;
@@ -29,7 +30,7 @@ export class FiberNode {
 
     constructor(tag: WorkTag, pendingProps: Props, key: Key) {
         this.tag = tag;
-        this.key = key || null;
+        this.key = key;
         this.stateNode = null;
         this.type = null;
 
@@ -62,11 +63,15 @@ export class FiberRootNode {
     container: Container;
     current: FiberNode;
     finshedWork: FiberNode | null;
+    pendingLanes: Lanes;
+    finishedLane: Lane;
     constructor(container: Container, hostRootFiber: FiberNode) {
         this.container = container;
         this.current = hostRootFiber;
         hostRootFiber.stateNode = this;
-        this.finshedWork = null
+        this.finshedWork = null;
+        this.pendingLanes = NoLanes;
+        this.finishedLane = NoLane;
     }
 }
 

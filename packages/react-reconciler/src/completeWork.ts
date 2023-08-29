@@ -23,7 +23,7 @@ export const completeWork = (wip: FiberNode) => {
                 // 构建DOM
                 const instance = createInstance(wip.type, newProps);
                 // 将DOM插入DOM树中
-                appendAllChildren(instance, wip);
+                appendAllChildren(instance as any, wip);
                 wip.stateNode = instance;
             }
             bubbleProperties(wip);
