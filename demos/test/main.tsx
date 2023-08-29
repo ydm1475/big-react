@@ -3,22 +3,17 @@ import ReactDOM from 'react-dom/client'
 
 const App = () => {
 
-  const [num, setNum] = useState(120);
+  const [num, setNum] = useState(100);
 
   const handleClick = () => {
-    setTimeout(() => {
-      setNum((num) => num + 1);
-      setNum((num) => num + 2);
-      setNum((num) => num + 3);
-    }, 10)
+    setNum((num) => num + 4);
+    setNum((num) => num + 5);
   }
 
   const handleClick2 = () => {
-
-    setTimeout(() => {
-      setNum((num) => num + 4);
-      setNum((num) => num + 5);
-    }, 10)
+    setNum((num) => num + 1);
+    setNum((num) => num + 2);
+    setNum((num) => num + 3);
   }
 
 
@@ -29,7 +24,7 @@ const App = () => {
       <>
         1212
       </>
-      <li onClick={handleClick2}>测试批量123{num}</li>
+      <li onClick={handleClick2}>测试批量{num}</li>
     </ul>
   )
   return (

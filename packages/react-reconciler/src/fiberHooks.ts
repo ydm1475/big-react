@@ -33,8 +33,8 @@ export function renderWithHooks(wip: FiberNode, lane: Lane) {
     const Component = wip.type;
     const props = wip.pendingProps;
     const children = Component(props);
-
     currentlyRenderingFiber = null;
+
     workInProgressHook = null;
     currentHook = null;
     renderLane = NoLane;
@@ -109,6 +109,7 @@ function updateState<State>(): [State, Dispatch<State>] {
     const hook = updateWorkInProgressHook();
     const queue = hook.updateQueue as UpdateQueue<State>;
     const pending = queue.shared.pending;
+    queue.shared.pending = null;
 
     if (pending !== null) {
         const { memoizedState } = processUpdateQueue(hook.memoizedState, pending, renderLane);

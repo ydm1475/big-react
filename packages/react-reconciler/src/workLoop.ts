@@ -16,8 +16,6 @@ function prepareFreshStack(root: FiberRootNode, lane: Lane) {
 }
 
 export function scheduleUpdateOnFiber(fiber: FiberNode, lane: Lane) {
-    console.log('444');
-
     // 调度功能,参数中的fiber指的是发生Update的fiber节点，要向上遍历到根节点
     const root = markUpdateFromFiberToRoot(fiber);
     markRootUpdated(root!, lane);
@@ -71,7 +69,7 @@ function performSyncWorkOnRoot(root: FiberRootNode, lane: Lane) {
         ensureRootIsScheduled(root);
         return;
     }
-
+    console.log('root', root);
     prepareFreshStack(root, lane);
     do {
         try {

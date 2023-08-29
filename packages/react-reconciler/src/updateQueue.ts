@@ -60,7 +60,7 @@ export const processUpdateQueue = <State>(
             const updateLane = pending?.lane;
 
             if (updateLane === renderLane) {
-                const action = pendingUpdate.action;
+                const action = pending!.action;
                 if (action instanceof Function) {
                     baseState = action(baseState);
                 } else {

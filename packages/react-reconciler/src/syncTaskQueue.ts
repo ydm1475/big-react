@@ -21,6 +21,7 @@ export function flushSyncCallbacks() {
             console.log(e);
         }
     } finally {
+        syncQueue = null;
         isFlushingSyncQueue = false;
     }
 }

@@ -10,6 +10,20 @@ export type TextInstance = Text;
 export const createInstance = (type: string, props: Props): Instance => {
     const dom = document.createElement(type) as any;
     updateFiberProps(dom as DOMELement, props);
+    // const dom = document.createElement(type);
+    // const isEvent = (key: string) => key.startsWith("on");
+    // for (const key in props) {
+    //     if (key === "children") {
+    //         continue;
+    //     }
+    //     if (isEvent(key)) {
+    //         const eventType = key.toLowerCase().substring(2);
+    //         dom.addEventListener(eventType, props[key]);
+    //     } else {
+    //         dom.setAttribute(key === "className" ? "class" : key, props[key]);
+    //     }
+    // }
+
     return dom;
 }
 
