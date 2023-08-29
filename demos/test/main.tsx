@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import ReactDOM from 'react-dom/client'
+import ReactDOM from 'react-noop-renderer';
 
 // const App = () => {
 
@@ -83,6 +83,8 @@ function Child() {
   });
   return <p>i am child.</p>;
 }
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const root = ReactDOM.createRoot();
+root.render(
   <App />
 )
+window.root = root;

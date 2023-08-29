@@ -1,5 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { defaults } = require('jest-config');
+
 module.exports = {
 	...defaults,
 	rootDir: process.cwd(),
@@ -17,6 +17,6 @@ module.exports = {
 	fakeTimers: {
 		enableGlobally: true,
 		legacyFakeTimers: true
-	}
-	// setupFilesAfterEnv: ['./scripts/jest/setupJest.js']
+	},
+	setupFilesAfterEnv: ['./scripts/jest/setupJest.js']
 };
