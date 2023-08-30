@@ -23,7 +23,7 @@ export function updateContainer(element: ReactElement | null, root: FiberRootNod
         const update = createUpdate<ReactElement | null>(element, lane);
         enqueueUpdate(hostRootFiber.updateQueue as any, update as any);
         scheduleUpdateOnFiber(hostRootFiber, lane);
-    })
+    });
     return element;
 
 }

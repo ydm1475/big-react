@@ -1,6 +1,21 @@
 import React, { useEffect, useRef, useState, useReducer } from 'react'
 import ReactDOM from 'react-dom/client';
 
+import {
+  unstable_ImmediatePriority as ImmediatePriority,
+  unstable_UserBlockingPriority as UserBlockingPriority,
+  unstable_NormalPriority as NormalPriority,
+  unstable_LowPriority as LowPriority,
+  unstable_IdlePriority as IdlePriority,
+  unstable_scheduleCallback as scheduleCallback,
+  unstable_shouldYield as shouldYield,
+  CallbackNode,
+  unstable_getFirstCallbackNode as getFirstCallbackNode,
+  unstable_cancelCallback as cancelCallback
+} from 'scheduler';
+// scheduleCallback(NormalPriority, () => {
+//   console.log('9090');
+// });
 // const App = () => {
 
 //   const [num, setNum] = useState(100);
@@ -77,17 +92,22 @@ function reducer(state, action) {
 }
 
 export default function Counter() {
-  const [state, dispatch] = useReducer(reducer, { age: 42 });
   const [num, setNum] = useState(10);
+  console.log('num', num);
+  const handleClick = () => {
+    setTimeout(() => {
+      setNum(num => num + 10);
+      setNum(num => num + 3);
+      setNum(num => num + 4);
+      setNum(num => num + 5);
+    }, 100)
+  }
   return (
     <>
-      <button onClick={() => {
-        dispatch({ type: 'incremented_age' })
-        // setNum(num => num + 1)
-      }}>
+      <button onClick={handleClick}>
         Increment age
       </button>
-      <p>你好。你今年{state.age}岁-----儿子{num}岁</p>
+      <p>你好。儿子{num}岁</p>
     </>
   );
 }

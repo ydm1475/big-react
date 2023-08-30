@@ -40,7 +40,7 @@ function ensureRootIsScheduled(root: FiberRootNode,) {
     const updateLane = getHighestPriorityLane(root.pendingLanes);
     const existCallBack = root.callbackNode;
     // 没有更新
-    if (updateLane == NoLane) {
+    if (updateLane === NoLane) {
         if (existCallBack != null) {
             unstable_cancelCallback(existCallBack);
         }
@@ -53,14 +53,14 @@ function ensureRootIsScheduled(root: FiberRootNode,) {
     const prevPriority = root.callbackPriority;
 
     if (curPriority === prevPriority) {
-        if (existCallBack != null) {
-            unstable_cancelCallback(existCallBack);
-        }
         return;
     }
 
-    let newCallbackNode = null;
+    if (existCallBack != null) {
+        unstable_cancelCallback(existCallBack);
+    }
 
+    let newCallbackNode = null;
 
     if (updateLane === SyncLane) {
         // 同步更新，用微任务调度
@@ -231,7 +231,7 @@ function commitRoot(root: FiberRootNode) {
             // 执行副作用
             flushPassiveEffects(root.pendingPassiveEffects);
             return;
-        })
+        });
     }
 
     markRootFinshed(root, lane);

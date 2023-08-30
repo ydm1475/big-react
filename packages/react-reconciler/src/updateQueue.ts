@@ -78,9 +78,9 @@ export const processUpdateQueue = <State>(
                 }
                 const action = pending!.action;
                 if (reducer instanceof Function) {
-                    newState = reducer(baseState, action);
+                    newState = reducer(newState, action);
                 } else if (action instanceof Function) {
-                    newState = action(baseState);
+                    newState = action(newState);
                 } else {
                     newState = action;
                 }
