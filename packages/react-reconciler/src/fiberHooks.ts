@@ -212,7 +212,6 @@ function mountWorkInProgressHook(): Hook {
         } else {
             workInProgressHook = hook;
             currentlyRenderingFiber.memoizedState = workInProgressHook;
-            currentlyRenderingFiber.hook = workInProgressHook;
 
         }
     } else {
@@ -274,7 +273,6 @@ function updateWorkInProgressHook(): Hook {
         } else {
             workInProgressHook = newHook;
             currentlyRenderingFiber.memoizedState = workInProgressHook;
-            currentlyRenderingFiber.hook = workInProgressHook;
 
         }
     } else {

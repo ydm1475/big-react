@@ -54,7 +54,6 @@ export class FiberNode {
         this.flags = NoFlags;
         this.subtreeFlags = NoFlags;
         this.updateQueue = null;
-        this.hook = null;
         this.deletions = null;
     }
 }
@@ -110,7 +109,6 @@ export const createWorkInProgress = (current: FiberNode, pendingProps: Props): F
     wip.ref = current.ref;
     wip.memoizedProps = current.memoizedProps;
     wip.memoizedState = current.memoizedState;
-    wip.hook = current.hook;
 
 
     return wip;
