@@ -1,6 +1,6 @@
 import internals from "shared/internals";
 import { FiberNode } from "./fiber";
-import { Dispatcher } from "react/src/currentDispatcher";
+import { Dispatcher, Reducer } from "react/src/currentDispatcher";
 import { UpdateQueue, createUpdate, createUpdateQueue, enqueueUpdate, processUpdateQueue } from "./updateQueue";
 import { Action } from "shared/ReactTypes";
 import { scheduleUpdateOnFiber } from "./workLoop";
@@ -63,8 +63,30 @@ export function renderWithHooks(wip: FiberNode, lane: Lane) {
 const HookDispatcherOnMount: Dispatcher = {
     useState: mountState,
     useEffect: mountEffect,
-    useRef: mountRef
+    useRef: mountRef,
+    useReducer: mountReducer
 }
+
+
+function mountReducer<State>(reducer: Reducer, initialArg: State, init: (...args: any) => void): [State, Dispatch<State>] {
+    const hook = mountWorkInProgressHook();
+    let initialState;
+    if (init != undefined) {
+        initialState = init(initialArg);
+    } else {
+        initialState = initialArg;
+    }
+
+    hook.memoizedState = initialState;
+    const queue = createUpdateQueue<State>() as UpdateQueue<any>;
+    queue.reducer = reducer;
+    hook.updateQueue = queue;
+
+    const dispatch = queue.dispatch = dispatchSetState.bind(null, currentlyRenderingFiber, queue);
+    return [hook.memoizedState, dispatch];
+}
+
+
 function mountRef<T>(initialValue: T): { current: T } {
     const hook = mountWorkInProgressHook();
     const ref = { current: initialValue }
@@ -79,10 +101,28 @@ function updateRef<T>(initialValue: T): { current: T } {
     return hook.memoizedState;
 
 }
+
+function updateReducer<State>(): [State, Dispatch<State>] {
+    const hook = updateWorkInProgressHook();
+    const queue = hook.updateQueue as UpdateQueue<State>;
+    const pending = queue.shared.pending;
+
+    queue.shared.pending = null;
+
+    if (pending !== null) {
+        const { memoizedState } = processUpdateQueue(hook.memoizedState, pending, renderLane, queue.reducer);
+        hook.memoizedState = memoizedState;
+    }
+
+
+    return [hook.memoizedState, queue.dispatch as Dispatch<State>];
+
+}
 const HookDispatcherOnUpdate: Dispatcher = {
-    useState: updateState,
+    useState: updateReducer,
     useEffect: updateEffect,
-    useRef: updateRef
+    useRef: updateRef,
+    useReducer: updateReducer
 }
 
 function updateEffect(create: EffectCallback | void, deps: EffectDeps) {
@@ -176,7 +216,6 @@ function dispatchSetState<State>(fiber: FiberNode | null, updateQueue: UpdateQue
     const lane = requestUpdateLane();
     const update = createUpdate(action, lane);
     enqueueUpdate(updateQueue, update);
-
     scheduleUpdateOnFiber(fiber!, lane);
 }
 
@@ -190,6 +229,7 @@ function mountState<State>(initialState: (() => State) | State): [State, Dispatc
     }
     let dispatch = null;
     const queue = createUpdateQueue<State>() as UpdateQueue<any>;
+
     hook.updateQueue = queue;
     hook.memoizedState = memoizedState;
 
@@ -224,21 +264,7 @@ function mountWorkInProgressHook(): Hook {
 }
 
 
-function updateState<State>(): [State, Dispatch<State>] {
 
-    const hook = updateWorkInProgressHook();
-    const queue = hook.updateQueue as UpdateQueue<State>;
-    const pending = queue.shared.pending;
-    queue.shared.pending = null;
-
-    if (pending !== null) {
-        const { memoizedState } = processUpdateQueue(hook.memoizedState, pending, renderLane);
-        hook.memoizedState = memoizedState;
-    }
-
-
-    return [hook.memoizedState, queue.dispatch as Dispatch<State>];
-}
 
 function updateWorkInProgressHook(): Hook {
     let nextCurrentHook: Hook | null;

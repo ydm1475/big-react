@@ -11,7 +11,8 @@ export interface UpdateQueue<State> {
     shared: {
         pending: Update<State> | null
     },
-    dispatch: any
+    dispatch: any,
+    reducer: any
 
 }
 
@@ -24,7 +25,8 @@ export const createUpdateQueue = <State>() => {
         shared: {
             pending: null
         },
-        dispatch: null
+        dispatch: null,
+        reducer: null
     } as UpdateQueue<State>
 }
 
@@ -45,7 +47,8 @@ export const enqueueUpdate = <State>(updateQueue: UpdateQueue<State>, update: Up
 export const processUpdateQueue = <State>(
     baseState: State,
     pendingUpdate: Update<State> | null,
-    renderLane: Lane
+    renderLane: Lane,
+    reducer?: any
 ): { memoizedState: State } => {
 
     const result: ReturnType<typeof processUpdateQueue<State>> = {
@@ -62,9 +65,18 @@ export const processUpdateQueue = <State>(
             if (updateLane === renderLane) {
                 const action = pending!.action;
                 if (action instanceof Function) {
-                    baseState = action(baseState);
+                    if (reducer instanceof Function) {
+                        baseState = reducer(baseState, action);
+                    } else {
+                        baseState = action(baseState);
+
+                    }
                 } else {
-                    baseState = action;
+                    if (reducer instanceof Function) {
+                        baseState = reducer(baseState, action);
+                    } else {
+                        baseState = action;
+                    }
                 }
             } else {
                 if (__DEV__) {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useReducer } from 'react'
 import ReactDOM from 'react-dom/client';
 
 // const App = () => {
@@ -63,7 +63,35 @@ function App() {
 function Child() {
   return <p ref={(dom) => console.log('dom is', dom)}>i am child.</p>;
 }
+
+
+function reducer(state, action) {
+  if (action.type === 'incremented_age') {
+    return {
+      age: state.age + 1
+    };
+  }
+  throw Error('Unknown action.');
+}
+
+export default function Counter() {
+  const [state, dispatch] = useReducer(reducer, { age: 42 });
+  const [num, setNum] = useState(10);
+
+  return (
+    <>
+      <button onClick={() => {
+        dispatch({ type: 'incremented_age' })
+        setNum(num => num + 1)
+      }}>
+        Increment age
+      </button>
+      <p>你好。你今年{state.age}岁-----儿子{num}岁</p>
+    </>
+  );
+}
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <App />
+  <Counter />
 )
