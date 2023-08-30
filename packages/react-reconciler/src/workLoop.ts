@@ -129,6 +129,8 @@ function performConcurrentWorkOnRoot(root: FiberRootNode, didTimeout: boolean): 
 
     }
 
+    console.log('root', root);
+
     if (exitStatus === RootCompleted) {
         // 生成的整个fiberNode
         const finshedWork = root.current.alternate;
@@ -180,7 +182,7 @@ function renderRoot(root: FiberRootNode, lane: Lane, shouldTimeSlice: boolean) {
             break;
         } catch (e) {
             if (__DEV__) {
-                console.warn('发生错误');
+                console.warn('发生错误', e);
 
             }
             workInProgress = null;

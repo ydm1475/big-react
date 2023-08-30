@@ -47,26 +47,28 @@ import ReactDOM from 'react-dom/client';
 
 
 function App() {
-  const [isDel, del] = useState(0);
-  const divRef = useRef(null);
-  console.log('ref', divRef.current);
-  useEffect(() => {
-    console.log('current', divRef.current);
-  });
+  const [number, update] = useState(100);
+  console.log('number', number);
+
   return (
-    <div ref={divRef} onClick={() => del(true)}>
-      {isDel ? '123' : <Child />}
-    </div>
+    <ul onClick={() => update(50)}>
+      {new Array(number).fill(0).map((_, i) => <Child key={i}>{i}</Child>)}
+    </ul>
   );
 }
 
-function Child() {
-  return <p ref={(dom) => console.log('dom is', dom)}>i am child.</p>;
+function Child({ children }) {
+  const now = performance.now();
+  while (performance.now - now < 4) {
+
+  }
+  return <li>{children}</li>;
 }
 
 
 function reducer(state, action) {
   if (action.type === 'incremented_age') {
+    console.log('state', state);
     return {
       age: state.age + 1
     };
@@ -77,12 +79,11 @@ function reducer(state, action) {
 export default function Counter() {
   const [state, dispatch] = useReducer(reducer, { age: 42 });
   const [num, setNum] = useState(10);
-
   return (
     <>
       <button onClick={() => {
         dispatch({ type: 'incremented_age' })
-        setNum(num => num + 1)
+        // setNum(num => num + 1)
       }}>
         Increment age
       </button>
