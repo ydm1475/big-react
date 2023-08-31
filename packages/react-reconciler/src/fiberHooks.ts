@@ -62,12 +62,30 @@ export function renderWithHooks(wip: FiberNode, lane: Lane) {
 }
 
 
+
 const HookDispatcherOnMount: Dispatcher = {
     useState: mountState,
     useEffect: mountEffect,
     useRef: mountRef,
     useReducer: mountReducer,
-    useTransition: mountTransition
+    useTransition: mountTransition,
+    useMemo: mountMemo,
+    useCallback: mountCallback
+}
+
+function mountCallback(callback: (...args: any) => void, deps: any[] | null) {
+    const hook = mountWorkInProgressHook();
+    const nextDeps = deps === undefined ? null : deps;
+    hook.memoizedState = [callback, nextDeps];
+    return callback;
+}
+
+function mountMemo(nextCreate: (...args: any) => void, deps: any[] | null) {
+    const hook = mountWorkInProgressHook();
+    const nextDeps = deps === undefined ? null : deps;
+    const nextValue = nextCreate();
+    hook.memoizedState = [nextValue, nextDeps];
+    return nextValue;
 }
 
 function startTransition<state>(setPending: Dispatch<any>, callback: () => void) {
@@ -169,8 +187,44 @@ const HookDispatcherOnUpdate: Dispatcher = {
     useEffect: updateEffect,
     useRef: updateRef,
     useReducer: updateReducer,
-    useTransition: updateTransition
+    useTransition: updateTransition,
+    useMemo: updateMemo,
+    useCallback: updateCallback
 }
+
+function updateCallback(callback: (...args: any) => void, deps: any[] | null) {
+    const hook = updateWorkInProgressHook();
+    const nextDeps = deps === undefined ? null : deps;
+    const preState = hook.memoizedState;
+    if (preState != null) {
+        const preDeps = preState[1];
+        if (areHookInputEqual(preDeps, nextDeps)) {
+            return preState[0];
+        }
+    }
+
+    hook.memoizedState = [callback, nextDeps];
+    return callback;
+}
+
+
+function updateMemo(nextCreate: (...args: any) => void, deps: any[] | null) {
+    const hook = updateWorkInProgressHook();
+    const nextDeps = deps === undefined ? null : deps;
+    const preState = hook.memoizedState;
+    if (preState != null) {
+        const preDeps = preState[1];
+        if (areHookInputEqual(preDeps, nextDeps)) {
+            return preState[0];
+        }
+    }
+
+    const nextValue = nextCreate();
+    hook.memoizedState = [nextValue, nextDeps];
+    return nextValue;
+}
+
+
 
 function updateEffect(create: EffectCallback | void, deps: EffectDeps) {
     const hook = updateWorkInProgressHook();

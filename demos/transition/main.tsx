@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useMemo, useCallback } from 'react';
 import TabButton from './TabButton';
 import AboutTab from './AboutTab';
 import PostsTab from './PostsTab';
@@ -10,7 +10,11 @@ import './style.css';
 function App() {
 	const [isPending, startTransition] = useTransition();
 	const [tab, setTab] = useState('about');
-	console.log('hello');
+
+	const callback = useCallback(() => {
+		console.log('tab', tab);
+	});
+	console.log('value', callback, callback());
 	function selectTab(nextTab) {
 		startTransition(() => {
 			setTab(nextTab);

@@ -7,6 +7,8 @@ export interface Dispatcher {
     useRef: <T>(initialValue: T) => { current: T };
     useReducer: <T>(reducer: Reducer, initialArg: T, init: () => void) => [T, Dispatch<T>],
     useTransition: () => [boolean, (callback: () => void) => void];
+    useMemo: (create: (...args: any) => void, deps: any[] | null) => void;
+    useCallback: (callback: (...args: any) => void, deps: any[] | null) => void;
 }
 export type Dispatch<State> = (action: Action<State>) => void;
 

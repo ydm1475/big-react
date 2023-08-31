@@ -151,6 +151,8 @@ function performSyncWorkOnRoot(root: FiberRootNode) {
         ensureRootIsScheduled(root);
         return;
     }
+
+    console.log('root', root);
     const exitStatus = renderRoot(root, nextLane, false);
     if (exitStatus === RootCompleted) {
         // 生成的整个fiberNode
